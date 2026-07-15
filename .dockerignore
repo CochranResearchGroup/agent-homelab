@@ -1,0 +1,10 @@
+.git
+.venv
+build
+dist
+rendered
+homelab.yaml
+secrets
+*.local.yaml
+*.local.env
+oauth-relay-state.json

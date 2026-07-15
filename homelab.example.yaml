@@ -1,0 +1,56 @@
+schema_version: 1
+site:
+  domain: example.net
+  timezone: Etc/UTC
+  certificate_resolver: letsencrypt
+  authelia:
+    url: http://authelia:9091/api/authz/forward-auth
+    session_secret_ref:
+      env: AUTHELIA_SESSION_SECRET
+    storage_encryption_key_ref:
+      env: AUTHELIA_STORAGE_ENCRYPTION_KEY
+
+nodes:
+  app-host:
+    roles: [service_host]
+    connect:
+      address: 192.0.2.10
+    ingress:
+      scheme: http
+      port: 80
+    deploy:
+      mode: ssh
+      root: /opt/agent-homelab
+      state_root: /var/lib/agent-homelab
+      validate_command: [docker, compose, config, --quiet]
+      reload_command: [docker, compose, up, -d]
+  gateway:
+    roles: [edge_gateway]
+    connect:
+      address: 198.51.100.20
+      ssh_alias: homelab-gateway
+    deploy:
+      mode: ssh
+      root: /opt/agent-homelab
+      state_root: /var/lib/agent-homelab
+      validate_command: [docker, compose, config, --quiet]
+      reload_command: [docker, compose, up, -d]
+
+services:
+  photos:
+    upstream:
+      node: app-host
+      scheme: http
+      host: host.docker.internal
+      port: 2283
+      port_source: compose.yaml IMMICH_PORT=2283
+    local:
+      enabled: true
+      hostname: photos.localhost
+    public:
+      enabled: true
+      hostname: photos.example.net
+      edge_node: gateway
+      auth:
+        provider: authelia
+        policy: one_factor

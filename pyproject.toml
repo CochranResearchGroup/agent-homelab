@@ -1,0 +1,65 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agent-homelab"
+version = "0.1.0rc1"
+description = "Agent-operated Traefik and Authelia ingress for direct and bastion-relayed homelabs"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "Apache-2.0"
+authors = [{name = "Agent Homelab contributors"}]
+keywords = ["homelab", "traefik", "authelia", "ingress", "agent-skills"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Topic :: System :: Systems Administration",
+]
+dependencies = [
+  "jsonschema>=4.22,<5",
+  "PyYAML>=6.0.1,<7",
+]
+
+[project.optional-dependencies]
+dev = [
+  "build>=1.2,<2",
+  "pip-audit>=2.7,<3",
+  "pytest>=9.0.3,<10",
+  "ruff>=0.5,<1",
+]
+
+[project.scripts]
+agent-homelab = "agent_homelab.cli:main"
+agent-homelab-oauth-relay = "agent_homelab.oauth_relay:main"
+agent-homelab-credential-health = "agent_homelab.credential_health:main"
+
+[project.urls]
+Documentation = "https://github.com/CochranResearchGroup/agent-homelab/tree/main/docs"
+Issues = "https://github.com/CochranResearchGroup/agent-homelab/issues"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+agent_homelab = ["homelab.schema.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "S"]
+ignore = ["S603", "S607"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["S101", "S105", "S106"]

@@ -1,0 +1,9 @@
+gog_bin: gog
+gws_bin: gws
+services: all
+keyring_backend: file
+tenants:
+  personal:
+    account: user@example.invalid
+    client: personal
+    gws_config_dir: ~/.config/gws

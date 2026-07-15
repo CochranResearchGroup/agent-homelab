@@ -1,0 +1,28 @@
+schema_version: 1
+site:
+  domain: example.net
+  timezone: Etc/UTC
+  certificate_resolver: letsencrypt
+nodes:
+  homelab:
+    roles: [service_host, edge_gateway]
+    connect:
+      address: 192.0.2.10
+    ingress:
+      scheme: http
+      port: 80
+services:
+  hello:
+    upstream:
+      node: homelab
+      scheme: http
+      host: host.docker.internal
+      port: 8080
+      port_source: compose.yaml ports 8080:8080
+    local:
+      enabled: true
+      hostname: hello.localhost
+    public:
+      enabled: true
+      hostname: hello.example.net
+      edge_node: homelab

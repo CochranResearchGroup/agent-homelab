@@ -1,0 +1,19 @@
+[Unit]
+Description=Agent Homelab OAuth callback relay
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/.config/agent-homelab/oauth-relay
+EnvironmentFile=-%h/.config/agent-homelab/oauth-relay/env
+ExecStart=%h/.local/bin/python -m agent_homelab.oauth_relay --config %h/.config/agent-homelab/oauth-relay/oauth-relay.yaml
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ReadWritePaths=%h/.config/agent-homelab/oauth-relay
+
+[Install]
+WantedBy=default.target

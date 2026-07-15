@@ -1,0 +1,59 @@
+schema_version: 1
+site:
+  domain: example.net
+  timezone: Etc/UTC
+  certificate_resolver: letsencrypt
+  authelia:
+    url: http://authelia:9091/api/authz/forward-auth
+nodes:
+  app-host:
+    roles: [service_host]
+    connect:
+      address: 192.0.2.10
+      ssh_alias: app-host
+    ingress:
+      scheme: http
+      port: 80
+  gateway:
+    roles: [edge_gateway]
+    connect:
+      address: 198.51.100.20
+      ssh_alias: gateway
+    deploy:
+      mode: local
+      root: /tmp/agent-homelab-runtime-validation-installed
+      state_root: /tmp/agent-homelab-runtime-validation
+      validate_command: [docker, compose, config, --quiet]
+services:
+  photos:
+    upstream:
+      node: app-host
+      scheme: http
+      host: host.docker.internal
+      port: 2283
+      port_source: compose.yaml PHOTO_PORT=2283
+    forward_auth:
+      photos-viewer-auth:
+        address: http://host.docker.internal:2283/api/auth/verify
+        trust_forward_header: true
+        auth_response_headers: [Remote-User]
+    local:
+      enabled: true
+      hostname: photos.localhost
+    public:
+      enabled: true
+      hostname: photos.example.net
+      edge_node: gateway
+      auth:
+        provider: authelia
+        policy: one_factor
+    path_routes:
+      - name: viewer
+        path_prefix: /viewer
+        upstream:
+          node: app-host
+          scheme: http
+          host: host.docker.internal
+          port: 8092
+          port_source: compose.yaml VIEWER_PORT=8092
+        middlewares: [photos-viewer-auth]

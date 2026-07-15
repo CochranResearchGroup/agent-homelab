@@ -1,0 +1,30 @@
+public_base_url: https://oauth.example.net
+bind_host: 127.0.0.1
+port: 8797
+state_ttl_seconds: 600
+state_file: oauth-relay-state.json
+
+providers:
+  example:
+    state_mode: relay
+    authorization_hosts:
+      - accounts.example.com
+    timeout_seconds: 120
+    start_command:
+      - /usr/local/bin/example-oauth-adapter
+      - start
+    finish_command:
+      - /usr/local/bin/example-oauth-adapter
+      - finish
+    tenants:
+      personal: {}
+
+  gog-gws:
+    state_mode: adapter
+    authorization_hosts:
+      - accounts.google.com
+    timeout_seconds: 120
+    start_command: [python, gog-gws-adapter.py, start]
+    finish_command: [python, gog-gws-adapter.py, finish]
+    tenants:
+      personal: {}

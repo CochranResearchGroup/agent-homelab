@@ -47,3 +47,11 @@ def test_init_refuses_overwrite(tmp_path: Path) -> None:
     inventory = tmp_path / "homelab.yaml"
     assert main(["init", str(inventory)]) == 0
     assert main(["init", str(inventory)]) == 2
+
+
+def test_recipe_catalog_commands(capsys) -> None:
+    assert main(["recipe", "list"]) == 0
+    assert "paperless-ngx" in capsys.readouterr().out
+    assert main(["recipe", "show", "immich"]) == 0
+    assert '"port": 2283' in capsys.readouterr().out
+    assert main(["recipe", "show", "missing-recipe"]) == 2

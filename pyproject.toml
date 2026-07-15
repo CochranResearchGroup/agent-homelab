@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "agent-homelab"
-version = "0.1.0rc1"
+version = "0.2.0rc1"
 description = "Agent-operated Traefik and Authelia ingress for direct and bastion-relayed homelabs"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -34,6 +34,7 @@ dev = [
 agent-homelab = "agent_homelab.cli:main"
 agent-homelab-oauth-relay = "agent_homelab.oauth_relay:main"
 agent-homelab-credential-health = "agent_homelab.credential_health:main"
+agent-homelab-borg-backup = "agent_homelab.borg_backup:main"
 
 [project.urls]
 Documentation = "https://github.com/CochranResearchGroup/agent-homelab/tree/main/docs"
@@ -48,6 +49,9 @@ where = ["src"]
 
 [tool.setuptools.package-data]
 agent_homelab = ["homelab.schema.json"]
+
+[tool.setuptools.data-files]
+"share/agent-homelab/recipes/services" = ["recipes/services/catalog.yaml"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

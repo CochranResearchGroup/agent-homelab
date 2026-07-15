@@ -1,0 +1,24 @@
+schema_version: 1
+repository_template: /srv/agent-homelab-example/backups/{stack}
+passphrase_env: BORG_PASSPHRASE
+compression: zstd,3
+volume_export_image: busybox:1.37.0
+retention:
+  daily: 7
+  weekly: 4
+  monthly: 6
+stacks:
+  documents:
+    compose_file: /srv/agent-homelab-example/stacks/documents/compose.yaml
+    stop_for_backup: true
+    paths:
+      - /srv/agent-homelab-example/stacks/documents/data
+      - /srv/agent-homelab-example/stacks/documents/media
+    docker_volumes:
+      - documents-postgres
+  edge:
+    compose_file: /srv/agent-homelab-example/stacks/edge/compose.yaml
+    stop_for_backup: true
+    paths:
+      - /srv/agent-homelab-example/stacks/edge/config
+    docker_volumes: []

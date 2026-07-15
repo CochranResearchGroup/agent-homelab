@@ -1,0 +1,11 @@
+[Unit]
+Description=Run Agent Homelab Borg backups daily
+
+[Timer]
+OnCalendar=daily
+Persistent=true
+RandomizedDelaySec=30m
+Unit=agent-homelab-borg-backup.service
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,229 @@
+schema_version: 1
+recipes:
+  code-server:
+    title: code-server
+    category: development
+    install:
+      strategy: compose-from-official-image
+      documentation: https://docs.linuxserver.io/images/docker-code-server/
+      images: [lscr.io/linuxserver/code-server]
+      components: [code-server]
+    upstream: {scheme: http, port: 8443, health_path: /healthz}
+    configuration:
+      canonical_url_keys: [PROXY_DOMAIN]
+      secret_keys: [PASSWORD, HASHED_PASSWORD, SUDO_PASSWORD]
+    persistence: [editor-config, operator-approved-workspace]
+    backup: {consistency: stop, inputs: [editor-config]}
+    ingress: {websocket: true, authelia: optional}
+    gotchas:
+      - Never mount an entire home directory unless the operator explicitly accepts that trust boundary.
+      - Treat shell access as administrative access even when another authentication layer is present.
+
+  gitlab:
+    title: GitLab
+    category: development
+    install:
+      strategy: compose-from-official-documentation
+      documentation: https://docs.gitlab.com/install/docker/installation/
+      images: [gitlab/gitlab-ce]
+      components: [gitlab]
+    upstream: {scheme: http, port: 80, health_path: /-/health}
+    configuration:
+      canonical_url_keys: [external_url]
+      secret_keys: [initial_root_password, smtp_password]
+    persistence: [config, logs, application-data]
+    backup: {consistency: application-native-plus-stop, inputs: [config, application-data]}
+    ingress: {websocket: true, authelia: optional}
+    gotchas:
+      - Preserve GitLab application backups as well as mounted state; repository data alone is not a complete restore.
+      - Keep the SSH clone port distinct from the host SSH daemon and document it in firewall rules.
+
+  immich:
+    title: Immich
+    category: photos
+    install:
+      strategy: upstream-compose-release
+      documentation: https://docs.immich.app/install/docker-compose/
+      compose_url: https://github.com/immich-app/immich/releases/latest/download/docker-compose.yml
+      environment_url: https://github.com/immich-app/immich/releases/latest/download/example.env
+      components: [server, machine-learning, postgres, valkey]
+    upstream: {scheme: http, port: 2283, health_path: /api/server/ping}
+    configuration:
+      canonical_url_keys: []
+      secret_keys: [DB_PASSWORD]
+    persistence: [upload-library, postgres-data, model-cache]
+    backup: {consistency: stop, inputs: [upload-library, postgres-data]}
+    ingress: {websocket: true, authelia: optional}
+    gotchas:
+      - Use a local filesystem for PostgreSQL; the official deployment does not support network shares for database data.
+      - Pin IMMICH_VERSION and review the upstream upgrade notes before changing it.
+
+  joplin-server:
+    title: Joplin Server
+    category: notes
+    install:
+      strategy: compose-from-official-source
+      documentation: https://github.com/laurent22/joplin/tree/dev/packages/server
+      images: [joplin/server, postgres]
+      components: [server, postgres]
+    upstream: {scheme: http, port: 22300, health_path: /api/ping}
+    configuration:
+      canonical_url_keys: [APP_BASE_URL]
+      secret_keys: [POSTGRES_PASSWORD, MAILER_AUTH_PASSWORD]
+    persistence: [postgres-data]
+    backup: {consistency: stop, inputs: [postgres-data]}
+    ingress: {websocket: false, authelia: optional}
+    gotchas:
+      - Set APP_BASE_URL to the final ingress URL before enrolling clients.
+      - Keep mail credentials and database credentials in runtime secret files, never inline Compose values.
+
+  n8n:
+    title: n8n
+    category: automation
+    install:
+      strategy: compose-from-official-documentation
+      documentation: https://docs.n8n.io/hosting/installation/server-setups/docker-compose/
+      images: [docker.n8n.io/n8nio/n8n, postgres]
+      components: [n8n, postgres]
+    upstream: {scheme: http, port: 5678, health_path: /healthz}
+    configuration:
+      canonical_url_keys: [N8N_HOST, N8N_PROTOCOL, N8N_EDITOR_BASE_URL, WEBHOOK_URL]
+      secret_keys: [N8N_ENCRYPTION_KEY, N8N_USER_MANAGEMENT_JWT_SECRET, DB_POSTGRESDB_PASSWORD]
+    persistence: [n8n-data, postgres-data]
+    backup: {consistency: stop, inputs: [n8n-data, postgres-data]}
+    ingress: {websocket: true, authelia: optional}
+    gotchas:
+      - Preserve N8N_ENCRYPTION_KEY with the backup or stored credentials cannot be decrypted after restore.
+      - Test public webhook URLs separately from the editor login route.
+
+  nextcloud-aio:
+    title: Nextcloud All-in-One
+    category: collaboration
+    install:
+      strategy: upstream-appliance-compose
+      documentation: https://github.com/nextcloud/all-in-one/blob/main/reverse-proxy.md
+      compose_url: https://github.com/nextcloud/all-in-one/blob/main/compose.yaml
+      components: [aio-mastercontainer, aio-managed-services]
+    upstream: {scheme: http, port: 11000, health_path: /status.php}
+    configuration:
+      canonical_url_keys: [APACHE_PORT, APACHE_IP_BINDING, APACHE_ADDITIONAL_NETWORK]
+      secret_keys: []
+    persistence: [aio-mastercontainer, nextcloud-data, aio-managed-volumes]
+    backup: {consistency: application-native, inputs: [aio-managed-backup]}
+    ingress: {websocket: true, authelia: avoid-double-auth}
+    gotchas:
+      - Use the AIO backup workflow for AIO-managed volumes; do not assume a mastercontainer-only archive is complete.
+      - The AIO mastercontainer creates the public Apache container, so configure its documented reverse-proxy variables instead of labels on the mastercontainer.
+
+  odoo:
+    title: Odoo
+    category: business
+    install:
+      strategy: compose-from-official-image
+      documentation: https://hub.docker.com/_/odoo
+      images: [odoo, postgres]
+      components: [odoo, postgres]
+    upstream: {scheme: http, port: 8069, health_path: /web/health}
+    configuration:
+      canonical_url_keys: [proxy_mode, web.base.url]
+      secret_keys: [admin_passwd, POSTGRES_PASSWORD]
+    persistence: [odoo-data, postgres-data, custom-addons, configuration]
+    backup: {consistency: application-native-plus-stop, inputs: [odoo-data, postgres-data, custom-addons, configuration]}
+    ingress: {websocket: true, authelia: optional}
+    gotchas:
+      - Enable proxy_mode and verify long-polling or websocket routes under the ingress hostname.
+      - A database dump without the filestore is incomplete; restore them as one consistency set.
+
+  opensign:
+    title: OpenSign
+    category: documents
+    install:
+      strategy: compose-from-official-source
+      documentation: https://github.com/OpenSignLabs/OpenSign
+      images: [opensign/opensign, opensign/opensignserver, mongo]
+      components: [client, server, mongo]
+    upstream: {scheme: http, port: 3000, health_path: /}
+    configuration:
+      canonical_url_keys: [PUBLIC_URL, SERVER_URL]
+      secret_keys: [MASTER_KEY, PASS_PHRASE, PFX_BASE64, MONGODB_URI, SMTP_PASS]
+    persistence: [mongo-data, application-files]
+    backup: {consistency: stop, inputs: [mongo-data, application-files]}
+    ingress: {websocket: true, authelia: optional}
+    gotchas:
+      - Preserve signing key material outside Git and include it in the encrypted recovery plan.
+      - Validate both the browser client URL and API URL after reverse-proxy changes.
+
+  paperless-ngx:
+    title: Paperless-ngx
+    category: documents
+    install:
+      strategy: upstream-compose
+      documentation: https://docs.paperless-ngx.com/setup/
+      components: [webserver, postgres, redis, gotenberg, tika]
+    upstream: {scheme: http, port: 8000, health_path: /}
+    configuration:
+      canonical_url_keys: [PAPERLESS_URL]
+      secret_keys: [PAPERLESS_SECRET_KEY, PAPERLESS_DBPASSWORD]
+    persistence: [data, media, consume, export, postgres-data]
+    backup: {consistency: stop, inputs: [data, media, export, postgres-data]}
+    ingress: {websocket: false, authelia: optional}
+    gotchas:
+      - Match USERMAP_UID and USERMAP_GID to the host owner of bind-mounted directories.
+      - Filesystems without inotify support require the documented consumer polling mode.
+
+  portainer-ce:
+    title: Portainer CE
+    category: administration
+    install:
+      strategy: compose-from-official-documentation
+      documentation: https://docs.portainer.io/start/install-ce/server/docker/linux
+      images: [portainer/portainer-ce]
+      components: [portainer]
+    upstream: {scheme: https, port: 9443, health_path: /api/status}
+    configuration:
+      canonical_url_keys: []
+      secret_keys: []
+    persistence: [portainer-data]
+    backup: {consistency: stop, inputs: [portainer-data]}
+    ingress: {websocket: true, authelia: recommended}
+    gotchas:
+      - Docker socket access is equivalent to root on the Docker host; do not expose Portainer without strong authentication.
+      - Export Portainer-managed Compose and environment metadata before treating filesystem backups as complete.
+
+  syncthing:
+    title: Syncthing
+    category: synchronization
+    install:
+      strategy: compose-from-official-image
+      documentation: https://docs.linuxserver.io/images/docker-syncthing/
+      images: [lscr.io/linuxserver/syncthing]
+      components: [syncthing]
+    upstream: {scheme: http, port: 8384, health_path: /rest/noauth/health}
+    configuration:
+      canonical_url_keys: []
+      secret_keys: []
+    persistence: [syncthing-config, synchronized-data]
+    backup: {consistency: stop, inputs: [syncthing-config]}
+    ingress: {websocket: true, authelia: recommended}
+    gotchas:
+      - Synchronization is not backup; retain independent versioned archives of irreplaceable data.
+      - Back up configuration and device identity, but avoid recursively archiving the Borg repository through a synchronized folder.
+
+  wordpress:
+    title: WordPress
+    category: publishing
+    install:
+      strategy: compose-from-official-image
+      documentation: https://hub.docker.com/_/wordpress
+      images: [wordpress, mariadb]
+      components: [wordpress, mariadb]
+    upstream: {scheme: http, port: 80, health_path: /wp-login.php}
+    configuration:
+      canonical_url_keys: [WP_HOME, WP_SITEURL]
+      secret_keys: [WORDPRESS_DB_PASSWORD, MARIADB_PASSWORD, MARIADB_ROOT_PASSWORD]
+    persistence: [wordpress-content, mariadb-data]
+    backup: {consistency: application-native-plus-stop, inputs: [wordpress-content, mariadb-data]}
+    ingress: {websocket: false, authelia: optional}
+    gotchas:
+      - Keep database dumps and wp-content from the same backup window.
+      - Verify site URLs and forwarded HTTPS detection before enabling public traffic.

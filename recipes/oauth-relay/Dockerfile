@@ -3,6 +3,7 @@ FROM python:3.12-slim@sha256:c3d81d25b3154142b0b42eb1e61300024426268edeb5b5a26dd
 WORKDIR /app
 COPY pyproject.toml README.md LICENSE ./
 COPY src ./src
+COPY recipes/services/catalog.yaml ./recipes/services/catalog.yaml
 RUN python -m pip install --no-cache-dir --upgrade pip==26.1.2 && pip install --no-cache-dir .
 
 USER 65532:65532

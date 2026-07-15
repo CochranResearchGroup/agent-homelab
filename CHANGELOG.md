@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.0-rc.1
+
+- Added a privacy-safe catalog for twelve Compose-managed homelab services.
+- Added a guarded BorgBackup runner with per-stack repositories, named-volume export, retention, checks, and staging restores.
+- Added service-catalog and Borg-backup agent skills plus a full first-homelab guide.
+
 ## 0.1.0-rc.1
 
 - Added schema-versioned direct, combined, and bastion-relay inventories.

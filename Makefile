@@ -1,4 +1,4 @@
-.PHONY: install test lint skills scan build inspect check
+.PHONY: install test lint skills recipes scan build inspect check
 
 install:
 	python -m pip install -e '.[dev]'
@@ -12,6 +12,9 @@ lint:
 skills:
 	python scripts/validate-skills.py
 
+recipes:
+	python scripts/validate-recipes.py
+
 scan:
 	scripts/scan-public.sh .
 
@@ -22,4 +25,4 @@ build:
 inspect: build
 	python scripts/inspect-dist.py dist
 
-check: lint test skills scan inspect
+check: lint test skills recipes scan inspect

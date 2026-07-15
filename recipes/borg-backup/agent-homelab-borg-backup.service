@@ -1,0 +1,14 @@
+[Unit]
+Description=Agent Homelab Borg backups
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+EnvironmentFile=%h/.config/agent-homelab/borg.env
+Environment=PATH=%h/.local/bin:/usr/local/bin:/usr/bin
+ExecStart=/usr/bin/env agent-homelab-borg-backup --config %h/.config/agent-homelab/backup.yaml backup --apply
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7
+NoNewPrivileges=true

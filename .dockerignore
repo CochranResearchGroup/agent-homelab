@@ -4,6 +4,10 @@ build
 dist
 rendered
 homelab.yaml
+backup.yaml
+borg.env
+*.borg-key
+restore-staging
 secrets
 *.local.yaml
 *.local.env

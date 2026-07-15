@@ -1,6 +1,6 @@
 # Agent Homelab
 
-Agent Homelab turns one privacy-safe inventory into Traefik and Authelia configuration for a single host or a service host relayed through a separate edge gateway. It includes a Python CLI and five agent skills for setup, ingress, maintenance, OAuth relay, and diagnosis.
+Agent Homelab turns one privacy-safe inventory into Traefik and Authelia configuration for a single host or a service host relayed through a separate edge gateway. It includes a Python CLI, a sanitized service catalog, guarded Borg backups, and seven agent skills for setup and operations.
 
 ## Supported topology
 
@@ -19,7 +19,7 @@ Python 3.11+, Docker Compose, and OpenSSH are supported on Linux.
 
 ```bash
 python -m pip install \
-  https://github.com/CochranResearchGroup/agent-homelab/releases/download/v0.1.0-rc.1/agent_homelab-0.1.0rc1-py3-none-any.whl
+  https://github.com/CochranResearchGroup/agent-homelab/releases/download/v0.2.0-rc.1/agent_homelab-0.2.0rc1-py3-none-any.whl
 agent-homelab --version
 ```
 
@@ -80,7 +80,9 @@ The schema is versioned. Use `agent-homelab migrate --inventory old.yaml --outpu
 | Skill | Phase | Purpose |
 |---|---|---|
 | `homelab-bootstrap` | Project start | Discover and bootstrap direct, combined, or relay topology |
+| `homelab-service-catalog` | Build | Install catalog services with ingress and recovery boundaries |
 | `homelab-service-ingress` | Operations | Add or change a service and verify proxy behavior |
+| `homelab-borg-backup` | Operations | Configure, check, and stage restores from encrypted Borg backups |
 | `homelab-maintenance` | Maintenance | Detect drift, validate health, and perform guarded upgrades |
 | `homelab-oauth-relay` | Operations | Install and test the optional headless OAuth relay |
 | `homelab-troubleshooter` | Runbook | Classify DNS, TLS, edge, auth, relay, origin, and app failures |
@@ -90,6 +92,9 @@ Copy a skill directory into the skill location used by your agent, or let the ag
 ## Documentation
 
 - [Architecture](docs/architecture/overview.md)
+- [First homelab](docs/guides/first-homelab.md)
+- [Service catalog](docs/guides/service-catalog.md)
+- [Borg backups](docs/guides/borg-backups.md)
 - [Direct-host setup](docs/guides/direct-host.md)
 - [Bastion relay](docs/guides/bastion-relay.md)
 - [Authelia](docs/guides/authentication.md)

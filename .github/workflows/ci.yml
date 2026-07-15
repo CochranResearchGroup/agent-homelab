@@ -22,6 +22,7 @@ jobs:
       - run: ruff check .
       - run: pytest
       - run: python scripts/validate-skills.py
+      - run: python scripts/validate-recipes.py
       - run: python -m build
       - run: python scripts/package-skills.py
       - run: python scripts/inspect-dist.py dist

@@ -19,7 +19,7 @@ Python 3.11+, Docker Compose, and OpenSSH are supported on Linux.
 
 ```bash
 python -m pip install \
-  https://github.com/CochranResearchGroup/agent-homelab/releases/download/v0.2.0-rc.1/agent_homelab-0.2.0rc1-py3-none-any.whl
+  https://github.com/CochranResearchGroup/agent-homelab/releases/download/v0.2.0-rc.2/agent_homelab-0.2.0rc2-py3-none-any.whl
 agent-homelab --version
 ```
 
@@ -55,7 +55,10 @@ Remove `--dry-run` only after the plan, destination, validation command, and rol
 
 ## Add a service
 
+Keep each service in an operator-owned Docker Compose project directory and use it as the deployment authority. Portainer is available as an optional recipe for visibility or manual diagnostics, but it isn't the recommended control plane for agent-managed stacks.
+
 ```bash
+agent-homelab recipe policy
 agent-homelab service upsert photos \
   --inventory homelab.yaml \
   --upstream-node app-host \

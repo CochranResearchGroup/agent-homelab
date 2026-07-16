@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.0-rc.2
+
+- Established operator-owned Docker Compose project directories as the recommended authority for agent-managed services.
+- Kept Portainer as an optional recipe for visibility and manual diagnostics rather than a primary control plane.
+- Added `agent-homelab recipe policy` so installed agents can inspect the operating recommendation.
+
 ## 0.2.0-rc.1
 
 - Added a privacy-safe catalog for twelve Compose-managed homelab services.

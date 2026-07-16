@@ -10,7 +10,7 @@ FIXED_TIMESTAMP = (2020, 1, 1, 0, 0, 0)
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Build a deterministic bundle of Agent Homelab skills")
-    parser.add_argument("--output", default="dist/agent-homelab-skills-v0.2.0-rc.1.zip")
+    parser.add_argument("--output", default="dist/agent-homelab-skills-v0.2.0-rc.2.zip")
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
     target = root / args.output

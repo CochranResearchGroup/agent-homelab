@@ -30,10 +30,23 @@ def catalog_path() -> Path:
 
 
 def load_recipes() -> dict[str, dict[str, Any]]:
+    return load_catalog()["recipes"]
+
+
+def load_catalog() -> dict[str, Any]:
     raw = yaml.safe_load(catalog_path().read_text())
-    if not isinstance(raw, dict) or raw.get("schema_version") != 1 or not isinstance(raw.get("recipes"), dict):
+    if (
+        not isinstance(raw, dict)
+        or raw.get("schema_version") != 1
+        or not isinstance(raw.get("operating_model"), dict)
+        or not isinstance(raw.get("recipes"), dict)
+    ):
         raise InventoryError("Service recipe catalog is invalid")
-    return raw["recipes"]
+    return raw
+
+
+def get_operating_model() -> dict[str, Any]:
+    return load_catalog()["operating_model"]
 
 
 def get_recipe(name: str) -> dict[str, Any]:

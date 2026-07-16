@@ -1,4 +1,15 @@
 schema_version: 1
+operating_model:
+  recommended_authority: docker-compose-project-directories
+  description: Keep each service in an operator-owned directory containing its Compose file, environment references, and recovery notes.
+  requirements:
+    - Run Docker Compose commands from the service project directory or pass its Compose file explicitly.
+    - Treat the Compose project directory as the durable deployment authority and keep secrets in ignored runtime files.
+    - Record image pins, state mounts, ingress ports, backup inputs, and upgrade notes beside the Compose definition.
+  portainer:
+    status: optional
+    role: visibility-and-manual-diagnostics
+    authority: never-primary
 recipes:
   code-server:
     title: code-server
@@ -187,6 +198,7 @@ recipes:
     backup: {consistency: stop, inputs: [portainer-data]}
     ingress: {websocket: true, authelia: recommended}
     gotchas:
+      - Agent-managed homelabs should operate services from their Docker Compose project directories; keep Portainer optional and never make its database the primary deployment authority.
       - Docker socket access is equivalent to root on the Docker host; do not expose Portainer without strong authentication.
       - Export Portainer-managed Compose and environment metadata before treating filesystem backups as complete.
 

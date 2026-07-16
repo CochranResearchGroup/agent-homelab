@@ -6,7 +6,7 @@ license: Apache-2.0
 
 # Homelab Service Catalog
 
-Use the recipe as an operational contract, then obtain complex Compose definitions from the named upstream authority. Do not copy a private deployment or silently improvise a stale stack.
+Use the recipe as an operational contract, then obtain complex Compose definitions from the named upstream authority. Operate each service from its operator-owned Docker Compose project directory. Do not copy a private deployment or silently improvise a stale stack.
 
 ## Reference files
 
@@ -19,6 +19,7 @@ Use the recipe as an operational contract, then obtain complex Compose definitio
 Copy and track:
 
 - [ ] Run `scripts/show-recipe.py <recipe>` and read the recipe's official deployment source.
+- [ ] Run `agent-homelab recipe policy` and use Docker Compose project directories as the deployment authority.
 - [ ] Confirm the host role, resource budget, persistent-storage root, and raw upstream port.
 - [ ] Fetch the upstream release or Compose definition into an ignored operator-owned stack directory.
 - [ ] Pin the selected release or image versions and save only secret references in durable configuration.
@@ -39,6 +40,7 @@ Treat raw service health, ingress reachability, application proxy correctness, a
 - `latest` in an upstream example is not an unattended upgrade policy; pin the reviewed release in runtime state.
 - Nextcloud AIO owns sibling containers and its backup lifecycle. Do not replace AIO backup with a mastercontainer-only archive.
 - Portainer and code-server are administrative access surfaces; external authentication does not reduce Docker socket or shell privileges.
+- Keep Portainer optional for visibility or manual diagnostics. Never use its database as the primary authority for an agent-managed stack.
 - Immich database files need local storage even when the photo library uses another storage tier.
 - n8n recovery requires its encryption key as well as database and application data.
 - GitLab, Odoo, and WordPress need application/database exports coordinated with filesystem state.

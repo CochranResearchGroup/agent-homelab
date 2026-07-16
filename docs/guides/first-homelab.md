@@ -29,7 +29,9 @@ Repeat for each service host. Apply one node at a time and verify the built-in h
 
 ## 4. Add services
 
-Choose an entry from `recipes/services/catalog.yaml` and follow the `homelab-service-catalog` skill. Fetch the current official Compose source, pin it in private runtime state, configure its persistent storage and secrets, then validate the raw service before adding ingress.
+Choose an entry from `recipes/services/catalog.yaml` and follow the `homelab-service-catalog` skill. Keep each service in its own operator-owned Docker Compose project directory. Use that directory for validation, startup, upgrades, backups, and recovery.
+
+Fetch the current official Compose source and pin it in private runtime state. Configure persistent storage and secret references, then validate the raw service before adding ingress. Portainer remains an optional recipe for visibility and manual diagnostics, but we don't recommend it as the control plane for agent-managed stacks.
 
 ```bash
 agent-homelab service upsert documents \

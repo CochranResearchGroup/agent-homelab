@@ -10,6 +10,7 @@ import yaml
 ID_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 ALLOWED_CONSISTENCY = {"stop", "application-native", "application-native-plus-stop"}
 ALLOWED_AUTH = {"optional", "recommended", "avoid-double-auth"}
+RECOMMENDED_AUTHORITY = "docker-compose-project-directories"
 
 
 def validate_catalog(path: Path) -> list[str]:
@@ -17,6 +18,15 @@ def validate_catalog(path: Path) -> list[str]:
     problems: list[str] = []
     if data.get("schema_version") != 1:
         problems.append("schema_version must be 1")
+    operating_model = data.get("operating_model", {})
+    if operating_model.get("recommended_authority") != RECOMMENDED_AUTHORITY:
+        problems.append(
+            f"operating_model.recommended_authority must be {RECOMMENDED_AUTHORITY}"
+        )
+    if operating_model.get("portainer", {}).get("authority") != "never-primary":
+        problems.append("operating_model.portainer.authority must be never-primary")
+    if not operating_model.get("requirements"):
+        problems.append("operating_model.requirements must not be empty")
     recipes = data.get("recipes")
     if not isinstance(recipes, dict) or not recipes:
         return [*problems, "recipes must be a non-empty mapping"]

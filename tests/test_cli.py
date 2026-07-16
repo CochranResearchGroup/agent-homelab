@@ -54,4 +54,6 @@ def test_recipe_catalog_commands(capsys) -> None:
     assert "paperless-ngx" in capsys.readouterr().out
     assert main(["recipe", "show", "immich"]) == 0
     assert '"port": 2283' in capsys.readouterr().out
+    assert main(["recipe", "policy"]) == 0
+    assert "docker-compose-project-directories" in capsys.readouterr().out
     assert main(["recipe", "show", "missing-recipe"]) == 2

@@ -13,6 +13,12 @@ Each recipe records:
 - the backup consistency owner
 - ingress behavior and high-risk setup details
 
+## Recommended operating model
+
+Use one operator-owned Docker Compose project directory per service. Treat its Compose definition, environment references, image pins, state mapping, and recovery notes as the durable deployment authority.
+
+Run `agent-homelab recipe policy` to inspect this recommendation from an installed package. Portainer remains in the catalog for operators who want visibility or manual diagnostics. We don't recommend Portainer as the primary control plane for agent-managed stacks.
+
 Complex applications evolve faster than this project. The catalog therefore points agents to official release-specific Compose sources instead of embedding a private or stale copy. Pin the selected upstream release in ignored operator state, validate it, and record the raw port in the Agent Homelab inventory.
 
 Use the `homelab-service-catalog` skill for the full install-to-recovery workflow.

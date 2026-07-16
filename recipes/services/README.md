@@ -2,6 +2,8 @@
 
 `catalog.yaml` is an agent-oriented map from a service name to its upstream deployment authority, ingress contract, persistent state, backup consistency level, and high-risk setup details.
 
+The catalog recommends one operator-owned Docker Compose project directory per service. Use that directory as the deployment authority for agent operations, upgrades, backup mapping, and recovery. Portainer remains an optional recipe for visibility and manual diagnostics, not the primary control plane.
+
 The catalog deliberately does not copy private Compose files or freeze complex upstream stacks. For services whose maintainers publish a release-specific Compose bundle, fetch that bundle from the listed official source, pin the selected release in operator-owned runtime state, and record the resulting upstream port with `agent-homelab service upsert`.
 
 Use the catalog in this order:

@@ -17,3 +17,13 @@ def test_public_service_catalog_is_valid() -> None:
     root = Path(__file__).parents[1]
     validator = load_validator()
     assert validator.validate_catalog(root / "recipes/services/catalog.yaml") == []
+
+
+def test_catalog_recommends_compose_directories_over_portainer() -> None:
+    root = Path(__file__).parents[1]
+    catalog = load_validator().yaml.safe_load(
+        (root / "recipes/services/catalog.yaml").read_text()
+    )
+    model = catalog["operating_model"]
+    assert model["recommended_authority"] == "docker-compose-project-directories"
+    assert model["portainer"]["authority"] == "never-primary"

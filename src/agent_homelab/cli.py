@@ -18,7 +18,7 @@ from .deploy import apply_plan, build_plan, format_plan
 from .migrations import migrate_payload
 from .model import InventoryError, load_inventory, topology_for, validate_inventory
 from .render import render_inventory
-from .service_recipes import get_recipe, load_recipes
+from .service_recipes import get_operating_model, get_recipe, load_recipes
 from .verify import results_json, verify_inventory
 
 
@@ -98,6 +98,7 @@ def parser() -> argparse.ArgumentParser:
     recipe = sub.add_parser("recipe", help="inspect the installed service recipe catalog")
     recipe_sub = recipe.add_subparsers(dest="recipe_command", required=True)
     recipe_sub.add_parser("list", help="list available service recipes")
+    recipe_sub.add_parser("policy", help="show the recommended service operating model")
     recipe_show = recipe_sub.add_parser("show", help="show one service recipe")
     recipe_show.add_argument("name")
 
@@ -162,7 +163,12 @@ def main(argv: list[str] | None = None) -> int:
             return _service(args)
         if args.command == "recipe":
             recipes = load_recipes()
-            result = sorted(recipes) if args.recipe_command == "list" else get_recipe(args.name)
+            if args.recipe_command == "list":
+                result = sorted(recipes)
+            elif args.recipe_command == "policy":
+                result = get_operating_model()
+            else:
+                result = get_recipe(args.name)
             print(json.dumps(result, indent=2, sort_keys=True))
             return 0
     except (InventoryError, OSError, ValueError) as exc:

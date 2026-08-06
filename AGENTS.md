@@ -1,10 +1,12 @@
 # Agent Homelab
 
-## Repository context
+## Repo Context
 
-This public repository provides a declarative Python CLI and installable agent skills for Traefik and Authelia homelab ingress. A node may be a `service_host`, an `edge_gateway`, or both. Public routes may terminate directly on the service host or relay through a separate edge gateway.
+- Describe the product area, architecture boundaries, and canonical planning surfaces here.
 
-Tracked source and synthetic fixtures are product code. `homelab.yaml`, `secrets/`, `rendered/`, installed node directories, OAuth state, ACME data, and runtime logs are operator state and must remain untracked.
+## Repo-Specific Guidance
+
+- Add the exact build, test, deploy, and service-boundary rules this repo expects.
 
 ## Policy Loading Contract
 
@@ -12,30 +14,6 @@ Tracked source and synthetic fixtures are product code. `homelab.yaml`, `secrets
 - Re-read the relevant policy files under `docs/dev/policies/` at the start of any non-trivial turn.
 - Re-read the relevant policy files when task scope changes mid-session.
 - When behavior is ambiguous, prefer re-reading policy over improvising from stale assumptions.
-
-## Required workflow
-
-- Use one inventory as the authority; generated files are derived.
-- Run `agent-homelab validate` before rendering or applying.
-- Use `plan` or `apply --dry-run` before mutation.
-- Validate staged configuration before promotion and preserve the previous installed tree as a rollback backup.
-- Never place credentials or private topology in source, fixtures, issues, logs, or agent memory.
-- Use only reserved example domains and documentation IP ranges in tracked files.
-
-## Development commands
-
-```bash
-python -m venv .venv
-.venv/bin/pip install -e '.[dev]'
-.venv/bin/pytest
-.venv/bin/ruff check .
-.venv/bin/agent-homelab validate --inventory tests/fixtures/relay.yaml
-.venv/bin/agent-homelab render --inventory tests/fixtures/relay.yaml --output rendered
-scripts/validate-skills.py
-scripts/scan-public.sh
-```
-
-Do not test apply against a real host unless the user explicitly puts that host and inventory in scope.
 
 ## Policy Re-read Triggers
 
@@ -71,6 +49,8 @@ Read and follow:
 - `docs/dev/policies/0022-turn-closeout.md`
 - `docs/dev/policies/0023-validation-and-handoff.md`
 - `docs/dev/policies/0024-upstream-fork-maintenance.md`
+- `docs/dev/policies/0025-planning-discipline.md`
+- `docs/dev/policies/0027-subagent-runtime-governance.md`
 
 ## Scope
 

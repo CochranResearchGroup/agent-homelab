@@ -51,6 +51,7 @@ Read and follow:
 - `docs/dev/policies/0024-upstream-fork-maintenance.md`
 - `docs/dev/policies/0025-planning-discipline.md`
 - `docs/dev/policies/0027-subagent-runtime-governance.md`
+- `docs/dev/policies/0029-active-lane-coordination.md`
 
 ## Scope
 

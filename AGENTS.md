@@ -52,6 +52,7 @@ Read and follow:
 - `docs/dev/policies/0025-planning-discipline.md`
 - `docs/dev/policies/0027-subagent-runtime-governance.md`
 - `docs/dev/policies/0029-active-lane-coordination.md`
+- `docs/dev/policies/0031-code-testing-discipline.md`
 
 ## Scope
 

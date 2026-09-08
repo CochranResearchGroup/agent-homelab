@@ -53,6 +53,8 @@ Read and follow:
 - `docs/dev/policies/0027-subagent-runtime-governance.md`
 - `docs/dev/policies/0029-active-lane-coordination.md`
 - `docs/dev/policies/0031-code-testing-discipline.md`
+- `docs/dev/policies/0032-model-selection-and-calibration.md`
+- `docs/dev/policies/0034-work-item-traceability.md`
 
 ## Scope
 

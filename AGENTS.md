@@ -55,6 +55,9 @@ Read and follow:
 - `docs/dev/policies/0031-code-testing-discipline.md`
 - `docs/dev/policies/0032-model-selection-and-calibration.md`
 - `docs/dev/policies/0034-work-item-traceability.md`
+- `docs/dev/policies/0036-collaborative-development-workflow.md`
+- `docs/dev/policies/0037-forge-issue-reporting.md`
+- `docs/dev/policies/0038-github-issue-operations.md`
 
 ## Scope
 
